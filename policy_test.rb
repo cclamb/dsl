@@ -11,8 +11,17 @@ end
 
 describe "Execute block in context" do
   it "Should be able to call class methods in context" do
-    policy = Policy.new do
-      
+
+    # We need to test with a global because of scoping constraints
+    $has_run = false
+    
+    class NewPolicy < Policy
+      def run
+        $has_run = true
+      end
     end
+    
+    policy = NewPolicy.new { run }
+    $has_run.should == true
   end
 end
