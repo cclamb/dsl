@@ -1,0 +1,1 @@
+class DslSyntaxError < StandardError; end

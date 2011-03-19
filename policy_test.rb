@@ -1,5 +1,5 @@
 
-require 'policy'
+require './policy'
 
 describe "Execute block" do
   it "Should be able to submit a block to a new policy" do
