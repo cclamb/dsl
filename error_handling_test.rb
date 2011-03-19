@@ -1,10 +1,9 @@
-
 require './error_handling'
 
 class TestClass; include ErrorHandling; end
 
-describe "raise_syntax_error" do
-  it "should raise an exception when called" do
+describe 'raise_syntax_error' do
+  it 'should raise an exception when called' do
     clz = TestClass.new
     has_caught_error = false
     begin

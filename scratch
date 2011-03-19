@@ -16,9 +16,10 @@ end
 
 or with an option
 * do we want to allow untagged activities?
+* no, but untagged constraints etc. are okay
 
 p = Policy.new(Logic.Sequential) do
-	activity do
+	activity :a1 do
 		constraint do
 			pass
 		end
@@ -35,7 +36,7 @@ and default to sequential
 * see above about activities
 
 p = Policy.new do
-	activity do
+	activity :a1 do
 		constraint do
 			pass
 		end
