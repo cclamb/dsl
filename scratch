@@ -1,0 +1,51 @@
+syntax like this?
+
+p = Policy.new(Logic.Sequential) do
+	activity :a1 do
+		constraint :c1 do
+			pass
+		end
+		constraint :c2 do
+			pass
+		end
+		obligation :o1 do
+			fail
+		end
+	end
+end
+
+or with an option
+* do we want to allow untagged activities?
+
+p = Policy.new(Logic.Sequential) do
+	activity do
+		constraint do
+			pass
+		end
+		constraint do
+			pass
+		end
+		obligation do
+			fail
+		end
+	end
+end
+
+and default to sequential
+* see above about activities
+
+p = Policy.new do
+	activity do
+		constraint do
+			pass
+		end
+		constraint do
+			pass
+		end
+		obligation do
+			fail
+		end
+	end
+end
+
+
