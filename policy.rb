@@ -10,6 +10,7 @@ class Policy
     @misc_key = 0
     @defined_activities = {}
     instance_eval(&block)
+    @active_activity = nil
     @ctx = :loaded
   end
 

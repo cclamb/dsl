@@ -33,3 +33,62 @@ describe 'activity' do
     end
   end
 end
+
+describe 'policy' do
+  it 'should call blocks immediately' do
+    is_called = false
+    policy = Policy.new do
+      is_called = true
+    end
+    is_called.should == true
+  end
+end
+
+describe 'activity' do
+  it 'should call blocks immediately' do
+    is_called = false
+    policy = Policy.new do
+      activity :a1 do
+        is_called = true
+      end
+    end
+    is_called.should == true
+  end
+end
+
+describe 'constraint' do
+  it 'should have a deferred call' do
+
+    is_called = false
+    is_constraint_called = false
+    is_obligation_called = false
+
+    policy = Policy.new do
+      activity :a1 do
+        is_called = true
+        constraint do
+          is_constraint_called = true
+        end
+        obligation do
+          is_obligation_called = true
+        end
+      end
+    end
+
+    is_called.should == true
+    is_constraint_called.should == false
+    is_obligation_called.should == false
+
+    is_called = false
+    policy.evaluate
+
+    is_called.should == false
+    is_constraint_called.should == true
+    is_obligation_called.should == true
+  end
+end
+
+describe '' do
+  it '' do
+  end
+end
