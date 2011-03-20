@@ -4,12 +4,18 @@ class Policy
   
   include ErrorHandling
 
-  def initialize(&block)
+  def initialize(evaluator = nil, &block)
     @ctx = :load
     @active_activity = nil
     @misc_key = 0
     @defined_activities = {}
     instance_eval(&block)
+    @ctx = :loaded
+  end
+
+  def evaluator(evaluator_type)
+    @ctx = :evaluator
+    @ctx = :load
   end
   
   def activity(tag)
@@ -28,10 +34,18 @@ class Policy
     process_block(tag, &block)
   end
 
+  def evaluate
+    @defined_activities.each do |k,v|
+      v.each do |k,v|
+        v.call
+      end
+    end
+  end
+
   private
 
   def process_block(tag, &block)
-    raise_syntax_error if @ctx != :activity
+    raise_syntax_error('ctx is' + @ctx.to_s) if @ctx != :activity
     if tag == nil
       tag = @misc_key
       @misc_key = @misc_key + 1
