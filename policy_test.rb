@@ -88,6 +88,34 @@ describe 'constraint' do
   end
 end
 
+describe 'constraint' do
+  it 'deferred call test, short form' do
+
+    is_called = false
+    is_constraint_called = false
+    is_obligation_called = false
+
+    policy = Policy.new do
+      activity :a1 do
+        is_called = true
+        constraint { is_constraint_called = true }
+        obligation { is_obligation_called = true }
+      end
+    end
+
+    is_called.should == true
+    is_constraint_called.should == false
+    is_obligation_called.should == false
+
+    is_called = false
+    policy.evaluate
+
+    is_called.should == false
+    is_constraint_called.should == true
+    is_obligation_called.should == true
+  end
+end
+
 describe '' do
   it '' do
   end
