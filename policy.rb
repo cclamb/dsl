@@ -4,7 +4,7 @@ class Policy
   
   include ErrorHandling
 
-  attr_accessor :artifact
+  attr_accessor :artifact, :context
 
   def initialize(evaluator = nil, &block)
     @ctx = :load
@@ -15,6 +15,7 @@ class Policy
     @active_activity = nil
     @ctx = :loaded
     @artifact = nil
+    @context = nil
   end
 
   def evaluator(evaluator_type)
@@ -41,8 +42,12 @@ class Policy
   def evaluate
     @defined_activities.each do |k,v|
       v.each do |k,v|
-        instance_eval { v.call }            if v.arity == 0
-        instance_eval { v.call(artifact) }  if v.arity == 1
+        case v.arity
+          when 0 ; instance_eval { v.call }
+          when 1 ; instance_eval { v.call(artifact) }
+          when 2 ; instance_eval { v.call(artifact, context) }
+          else ; raise_syntax_error('incorrect constraint arity')
+        end
       end
     end
   end

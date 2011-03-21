@@ -190,3 +190,68 @@ describe 'constraint' do
     o1_artifact.should == artifact
   end
 end
+
+describe 'constraint' do
+  it 'should fail with incorrect constraint arity' do
+    policy = Policy.new do
+      activity :a1 do
+        constraint { |x, y, z| return }
+      end
+    end
+    
+    is_err = false
+    begin
+      policy.evaluate
+    rescue
+      is_err = true
+    end
+    
+    is_err.should == true
+  end
+end
+
+describe 'constraint' do
+  it 'should allow up to arity two' do
+    
+    is_c0_called = is_c1_called = is_c2_called = false
+    c1_artifact = c2_artifact = nil
+    c2_context = nil
+    
+    policy = Policy.new do
+      activity :a1 do
+        constraint { is_c0_called = true }
+        constraint do |artifact| 
+          is_c1_called = true
+          c1_artifact = artifact
+        end
+        constraint do |artifact, context|
+          is_c2_called = true
+          c2_artifact = artifact
+          c2_context = context
+        end
+      end
+    end
+    
+    artifact = 'foo'
+    context = 'bar'
+    
+    is_c0_called.should == false
+    is_c1_called.should == false
+    is_c2_called.should == false
+    c1_artifact.should == nil
+    c2_artifact.should == nil
+    c2_context.should == nil
+    
+    policy.artifact = artifact
+    policy.context = context
+    policy.evaluate
+    
+    is_c0_called.should == true
+    is_c1_called.should == true
+    is_c2_called.should == true
+    c1_artifact.should == artifact
+    c2_artifact.should == artifact
+    c2_context.should == context
+    
+  end
+end
