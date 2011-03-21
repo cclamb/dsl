@@ -4,7 +4,7 @@ class Policy
   
   include ErrorHandling
 
-  attr_accessor :assoc_artifact
+  attr_accessor :artifact
 
   def initialize(evaluator = nil, &block)
     @ctx = :load
@@ -14,7 +14,7 @@ class Policy
     instance_eval(&block)
     @active_activity = nil
     @ctx = :loaded
-    @assoc_artifact = nil
+    @artifact = nil
   end
 
   def evaluator(evaluator_type)
@@ -41,14 +41,10 @@ class Policy
   def evaluate
     @defined_activities.each do |k,v|
       v.each do |k,v|
-        instance_eval(&v)
+        instance_eval { v.call }            if v.arity == 0
+        instance_eval { v.call(artifact) }  if v.arity == 1
       end
     end
-  end
-
-  def artifact
-    raise RuntimeError.new('no artifact defined') if assoc_artifact == nil
-    yield(assoc_artifact) if block_given?
   end
 
   private

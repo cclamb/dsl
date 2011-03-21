@@ -147,46 +147,46 @@ describe 'constraint' do
   end
 end
 
-describe 'artifact' do
-  it 'should allow artifact testing inside of constraints' do
-    is_called_1 = is_called_2 = is_called_3 = false
+describe 'constraint' do
+  it 'should be able to pass aritfact optionally' do
+
+    is_called = false
+    is_constraint_called = false
+    is_obligation_called = false
+
+    c1_artifact = nil
+    o1_artifact = nil
+
     policy = Policy.new do
       activity :a1 do
-        constraint do
-          artifact { |a| is_called_1 = true }
+        is_called = true
+        constraint :c1 do |a|
+          is_constraint_called = true
+          c1_artifact = a
         end
-        constraint do
-          artifact { |a| is_called_2 = true }
-        end
-        constraint do
-          artifact { |a| is_called_3 = true }
+        obligation :o1 do |a|
+          is_obligation_called = true
+          o1_artifact = a
         end
       end
     end
+    
+    artifact = 'foo'
+    policy.artifact = artifact
 
-    is_called_1.should == false
-    is_called_2.should == false
-    is_called_3.should == false
-    is_error = false
+    is_called.should == true
+    is_constraint_called.should == false
+    is_obligation_called.should == false
+    c1_artifact.should == nil
+    o1_artifact.should == nil
 
-    # we have no associated artifact so an exception should be raised.
-    begin
-      policy.evaluate
-    rescue
-      is_error = true
-    end
-  
-    is_error.should == true
-    is_called_1.should == false
-    is_called_2.should == false
-    is_called_3.should == false
-
-    policy.assoc_artifact = 'artifact'
+    is_called = false
     policy.evaluate
 
-    is_called_1.should == true
-    is_called_2.should == true
-    is_called_3.should == true
-
+    is_called.should == false
+    is_constraint_called.should == true
+    is_obligation_called.should == true
+    c1_artifact.should == artifact
+    o1_artifact.should == artifact
   end
 end
