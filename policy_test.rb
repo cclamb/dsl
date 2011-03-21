@@ -146,3 +146,47 @@ describe 'constraint' do
     is_obligation_called.should == true
   end
 end
+
+describe 'artifact' do
+  it 'should allow artifact testing inside of constraints' do
+    is_called_1 = is_called_2 = is_called_3 = false
+    policy = Policy.new do
+      activity :a1 do
+        constraint do
+          artifact { |a| is_called_1 = true }
+        end
+        constraint do
+          artifact { |a| is_called_2 = true }
+        end
+        constraint do
+          artifact { |a| is_called_3 = true }
+        end
+      end
+    end
+
+    is_called_1.should == false
+    is_called_2.should == false
+    is_called_3.should == false
+    is_error = false
+
+    # we have no associated artifact so an exception should be raised.
+    begin
+      policy.evaluate
+    rescue
+      is_error = true
+    end
+  
+    is_error.should == true
+    is_called_1.should == false
+    is_called_2.should == false
+    is_called_3.should == false
+
+    policy.assoc_artifact = 'artifact'
+    policy.evaluate
+
+    is_called_1.should == true
+    is_called_2.should == true
+    is_called_3.should == true
+
+  end
+end
