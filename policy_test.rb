@@ -255,3 +255,17 @@ describe 'constraint' do
     
   end
 end
+
+describe 'pass/fail' do
+  it 'should be able to process pass/fail from constraints' do
+    policy = Policy.new do
+      activity :a1 do
+        constraint { pass }
+        constraint { fail }
+      end
+    end
+    
+    policy.evaluate
+    
+  end
+end

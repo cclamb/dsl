@@ -1,52 +1,49 @@
-syntax like this?
 
-p = Policy.new(Logic.Sequential) do
-	activity :a1 do
-		constraint :c1 do
-			pass
-		end
-		constraint :c2 do
-			pass
-		end
-		obligation :o1 do
-			fail
-		end
-	end
+Supported syntax:
+
+Single policy, single activity.  Each policy must have at least one activity, and activities must be tagged:
+p = Policy.new do
+	activity :play
 end
 
-or with an option
-* do we want to allow untagged activities?
-* no, but untagged constraints etc. are okay
-
-p = Policy.new(Logic.Sequential) do
-	activity :a1 do
-		constraint do
-			pass
-		end
-		constraint do
-			pass
-		end
-		obligation do
-			fail
-		end
-	end
-end
-
-and default to sequential
-* see above about activities
 
 p = Policy.new do
-	activity :a1 do
-		constraint do
-			pass
-		end
-		constraint do
-			pass
-		end
-		obligation do
-			fail
-		end
+	evaluator :std_eval
+	activity :play
+end
+
+p = Policy.new :std_eval do
+	activity :play
+	activity :record do
+		constraint { pass }
+		constraint { fail }
 	end
 end
 
+p = Policy.new do
+	activity :play do
+		constraint do
+		
+		end
+		constraint do
+		
+		end
+		constraint do
+		
+		end
+	end
+	activity :record do
+		constraint do
+		
+		end
+		constraint do
+		
+		end
+	end
+	activity :rewind
+	activity :fast_forward
+	activity :stop
+	activity :pause
+end
+	
 

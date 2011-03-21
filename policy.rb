@@ -11,7 +11,7 @@ class Policy
     @active_activity = nil
     @misc_key = 0
     @defined_activities = {}
-    instance_eval(&block)
+    instance_exec(&block)
     @active_activity = nil
     @ctx = :loaded
     @artifact = nil
@@ -43,13 +43,19 @@ class Policy
     @defined_activities.each do |k,v|
       v.each do |k,v|
         case v.arity
-          when 0 ; instance_eval { v.call }
-          when 1 ; instance_eval { v.call(artifact) }
-          when 2 ; instance_eval { v.call(artifact, context) }
+          when 0 ; instance_exec { v.call }
+          when 1 ; instance_exec { v.call(artifact) }
+          when 2 ; instance_exec { v.call(artifact, context) }
           else ; raise_syntax_error('incorrect constraint arity')
         end
       end
     end
+  end
+
+  def pass
+  end
+  
+  def fail
   end
 
   private
