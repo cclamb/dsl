@@ -269,3 +269,57 @@ describe 'pass/fail' do
     
   end
 end
+
+describe 'policy' do
+  it 'should handle non-trivial policies and white space' do
+    
+    policy = Policy.new do
+      
+      evaluator :std_eval
+      
+    	activity :play do
+    	  
+    		constraint do |artifact| 
+    		  fail if artifact == nil
+  		  end
+  		  
+    		constraint do |artifact, context| 
+    		  fail if context == nil
+  		  end
+  		  
+    		constraint do
+          current_time = Time.new
+          future_time = Time.at(1500000000)
+          fail unless current_time <= future_time
+    		end
+    		
+    	end
+    	
+    	activity :record do
+    	  
+    		constraint do |artifact| 
+    		  pass unless artifact == nil
+    		end
+    		
+    		constraint do
+          current_time = Time.new
+          future_time = Time.at(1500000000)
+          fail unless current_time <= future_time
+    		end
+    		
+    	end
+    	
+    	activity :rewind
+    	
+    	activity :fast_forward
+    	
+    	activity :stop
+    	
+    	activity :pause
+    end
+    
+    policy.evaluate
+    
+  end
+end
+
