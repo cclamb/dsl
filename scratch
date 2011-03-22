@@ -45,5 +45,30 @@ p = Policy.new do
 	activity :stop
 	activity :pause
 end
+
+
+so this is cool...
+
+ruby-1.9.2-p0 > p=''
+ => "" 
+ruby-1.9.2-p0 > IO.foreach('policies/simple-policy.rb', 'r') do |line|
+ruby-1.9.2-p0 >     p = p + line
+ruby-1.9.2-p0 ?>  end
+ => nil 
+ruby-1.9.2-p0 > puts p
+policy :p1 do
+  activity :a1 do
+	  constraint do
+		  puts 'c1'
+	  end
+	  constraint do
+		  puts 'c2'
+	  end
+  end
+end
+ => nil 
+ruby-1.9.2-p0 > eval(p)
+ => #<Policy:0x9c2ecec @ctx=:loaded, @active_activity=nil, @misc_key=2, @defined_activities={:a1=>{0=>#<Proc:0x9c2ec24@(eval):3>, 1=>#<Proc:0x9c2ec10@(eval):6>}}, @artifact=nil, @context=nil> 
+
 	
 

@@ -1,5 +1,7 @@
 require './error_handling'
 
+$defined_policies = {}
+
 class Policy
   
   include ErrorHandling
@@ -69,4 +71,10 @@ class Policy
     @defined_activities[@active_activity][tag] = block
   end
 
+end
+
+def policy(tag = nil, evaluator = nil, &block)
+  $defined_policies[tag] \
+    = evaluator != nil ? Policy.new(evaluator, &block) \
+    : Policy.new(&block)
 end
