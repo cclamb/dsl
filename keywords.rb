@@ -20,3 +20,7 @@ def tuple(tuple_tag, artifact_tag, policy_tag = nil, &b)
   end
   $defined_tuples[:tuple_tag] = [artifact_tag, policy]
 end
+
+def artifact
+
+end

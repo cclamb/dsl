@@ -49,8 +49,11 @@ describe 'tuple' do
     $defined_tuples = {}
   end
 
-  it '' do
-  end
+  it 'should be tested'
 
+end
+
+describe 'artifact' do
+  it 'should be tested'
 end
 
