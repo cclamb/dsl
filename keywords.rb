@@ -2,6 +2,7 @@ require './policy.rb'
 
 $defined_policies = {}
 $defined_tuples = {}
+$defined_artifacts = {}
 
 def policy(tag = nil, evaluator = nil, &block)
   $defined_policies[tag] \
