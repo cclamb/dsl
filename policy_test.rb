@@ -93,6 +93,7 @@ describe 'policy' do
 end
 
 describe 'activity' do
+
   it 'should call blocks immediately' do
     is_called = false
     policy = Policy.new do
@@ -102,17 +103,26 @@ describe 'activity' do
     end
     is_called.should == true
   end
-end
 
-describe 'activity' do
   it 'should handle empty restrictions' do
     policy = Policy.new do
       activity :a1
     end
   end
+
 end
 
 describe 'constraint' do
+
+  it 'should handle nil constraints safely' do
+    policy = Policy.new do
+      activity :a1 do
+        constraint :c1
+      end
+    end
+    policy.evaluate
+  end
+
   it 'should have a deferred call' do
 
     is_called = false

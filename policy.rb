@@ -47,7 +47,7 @@ class Policy
           when 1 ; instance_exec { v.call(artifact) }
           when 2 ; instance_exec { v.call(artifact, context) }
           else ; raise_syntax_error('incorrect constraint arity')
-        end
+        end unless v == nil
       end
     end
   end
