@@ -1,5 +1,6 @@
 require './policy'
 require './keywords'
+require 'open-uri'
 
 describe 'policy' do
   before :all do
@@ -42,18 +43,73 @@ describe 'policy' do
 
 end
 
+describe 'artifact' do
+
+  before :all do
+    $defined_activities = {}
+  end
+
+  it 'should create a new artifact and extract defined properties' do
+    uri = URI.parse('http://www.unm.edu/zimmerman_library/218')
+    artifact :a1 do
+      define :foo => 'bar'
+      define :uri => uri
+    end
+
+    artif = $defined_artifacts[:a1]
+
+    artif.foo.should == 'bar'
+    artif.uri.should == uri
+    artif.bar.should == nil
+  end
+end
+
 describe 'tuple' do
 
   before :all do
     $defined_policies = {}
     $defined_tuples = {}
+    $defined_artifacts = {}
   end
 
-  it 'should be tested'
+  it 'should associate a defined policy with a defined artifact' do
+    policy :p1
+    artifact :a1
+    tuple :t1, :a1, :p1
+    $defined_tuples[:t1][0].instance_of?(Artifact).should == true
+    $defined_tuples[:t1][1].instance_of?(Policy).should == true
+  end
+
+  it 'should assiciate anonymous policies and artifacts' do
+    pending 'anon support not implemented'
+    tuple :t1, (artifact :a1), (policy :p1)
+    $defined_tuples[:t1][0].instance_of?(Artifact).should == true
+    $defined_tuples[:t1][1].instance_of?(Policy).should == true
+  end
+
+  it 'should associate anonymous policies with defined artifacts' do
+    pending 'anon support not implemented'
+    artifact :a1
+    tuple :t1, :a1, (policy :p1)
+    $defined_tuples[:t1][0].instance_of?(Artifact).should == true
+    $defined_tuples[:t1][1].instance_of?(Policy).should == true
+  end
+
+  it 'should associate defined policies with anonymous artifacts' do
+    pending 'anon support not implemented'
+    policy :p1
+    tuple :t1, (artifact :a1), :p1
+    $defined_tuples[:t1][0].instance_of?(Artifact).should == true
+    $defined_tuples[:t1][1].instance_of?(Policy).should == true
+  end
+
+  it 'should handle non-trivial anonymous policies'
+
+  it 'should handle non-trivial anonymous activities'
+
+  it 'should handle non-trivial anonymous policies and anonymous activities'
 
 end
 
-describe 'artifact' do
-  it 'should be tested'
-end
+
 

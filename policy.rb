@@ -11,7 +11,7 @@ class Policy
     @active_activity = nil
     @misc_key = 0
     @defined_activities = {}
-    instance_exec(&block)
+    instance_exec(&block) if block_given?
     @active_activity = nil
     @ctx = :loaded
     @artifact = nil

@@ -1,14 +1,13 @@
 require './policy'
 
 describe 'Execute block' do
+
   it 'Should be able to submit a block to a new policy' do
     has_run = false
     policy = Policy.new { has_run = true }
     has_run.should == true 
   end
-end
 
-describe 'Execute block in context' do
   it 'Should be able to call class methods in context' do
 
     # We need to test with a global because of scoping constraints
@@ -25,15 +24,13 @@ describe 'Execute block in context' do
   end
 end
 
-describe 'activity' do
-  it 'should handle empty restrictions' do
-    policy = Policy.new do
-      activity :a1
-    end
-  end
-end
-
 describe 'policy' do
+
+  it 'should support degenerate policies' do
+    policy = Policy.new
+    policy.class.to_s.should == 'Policy'
+  end
+
   it 'should call blocks immediately' do
     is_called = false
     policy = Policy.new do
@@ -41,6 +38,58 @@ describe 'policy' do
     end
     is_called.should == true
   end
+
+  it 'should handle non-trivial policies and white space' do
+    
+    policy = Policy.new do
+      
+      evaluator :std_eval
+      
+    	activity :play do
+    	  
+    		constraint do |artifact| 
+    		  fail if artifact == nil
+  		  end
+  		  
+    		constraint do |artifact, context| 
+    		  fail if context == nil
+  		  end
+  		  
+    		constraint do
+          current_time = Time.new
+          future_time = Time.at(1500000000)
+          fail unless current_time <= future_time
+    		end
+    		
+    	end
+    	
+    	activity :record do
+    	  
+    		constraint do |artifact| 
+    		  pass unless artifact == nil
+    		end
+    		
+    		constraint do
+          current_time = Time.new
+          future_time = Time.at(1500000000)
+          fail unless current_time <= future_time
+    		end
+    		
+    	end
+    	
+    	activity :rewind
+    	
+    	activity :fast_forward
+    	
+    	activity :stop
+    	
+    	activity :pause
+    end
+    
+    policy.evaluate
+    
+  end
+
 end
 
 describe 'activity' do
@@ -52,6 +101,14 @@ describe 'activity' do
       end
     end
     is_called.should == true
+  end
+end
+
+describe 'activity' do
+  it 'should handle empty restrictions' do
+    policy = Policy.new do
+      activity :a1
+    end
   end
 end
 
@@ -85,10 +142,8 @@ describe 'constraint' do
     is_constraint_called.should == true
     is_obligation_called.should == true
   end
-end
 
-describe 'constraint' do
-  it 'deferred call test, short form' do
+  it 'should support deferred call test, short form' do
 
     is_called = false
     is_constraint_called = false
@@ -113,9 +168,7 @@ describe 'constraint' do
     is_constraint_called.should == true
     is_obligation_called.should == true
   end
-end
 
-describe 'constraint' do
   it 'should have a deferred call, tags' do
 
     is_called = false
@@ -145,9 +198,7 @@ describe 'constraint' do
     is_constraint_called.should == true
     is_obligation_called.should == true
   end
-end
 
-describe 'constraint' do
   it 'should be able to pass aritfact optionally' do
 
     is_called = false
@@ -189,9 +240,7 @@ describe 'constraint' do
     c1_artifact.should == artifact
     o1_artifact.should == artifact
   end
-end
 
-describe 'constraint' do
   it 'should fail with incorrect constraint arity' do
     policy = Policy.new do
       activity :a1 do
@@ -208,9 +257,7 @@ describe 'constraint' do
     
     is_err.should == true
   end
-end
 
-describe 'constraint' do
   it 'should allow up to arity two' do
     
     is_c0_called = is_c1_called = is_c2_called = false
@@ -269,57 +316,3 @@ describe 'pass/fail' do
     
   end
 end
-
-describe 'policy' do
-  it 'should handle non-trivial policies and white space' do
-    
-    policy = Policy.new do
-      
-      evaluator :std_eval
-      
-    	activity :play do
-    	  
-    		constraint do |artifact| 
-    		  fail if artifact == nil
-  		  end
-  		  
-    		constraint do |artifact, context| 
-    		  fail if context == nil
-  		  end
-  		  
-    		constraint do
-          current_time = Time.new
-          future_time = Time.at(1500000000)
-          fail unless current_time <= future_time
-    		end
-    		
-    	end
-    	
-    	activity :record do
-    	  
-    		constraint do |artifact| 
-    		  pass unless artifact == nil
-    		end
-    		
-    		constraint do
-          current_time = Time.new
-          future_time = Time.at(1500000000)
-          fail unless current_time <= future_time
-    		end
-    		
-    	end
-    	
-    	activity :rewind
-    	
-    	activity :fast_forward
-    	
-    	activity :stop
-    	
-    	activity :pause
-    end
-    
-    policy.evaluate
-    
-  end
-end
-
