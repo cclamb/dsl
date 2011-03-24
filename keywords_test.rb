@@ -81,14 +81,12 @@ describe 'tuple' do
   end
 
   it 'should assiciate anonymous policies and artifacts' do
-    pending 'anon support not implemented'
     tuple :t1, (artifact :a1), (policy :p1)
     $defined_tuples[:t1][0].instance_of?(Artifact).should == true
     $defined_tuples[:t1][1].instance_of?(Policy).should == true
   end
 
   it 'should associate anonymous policies with defined artifacts' do
-    pending 'anon support not implemented'
     artifact :a1
     tuple :t1, :a1, (policy :p1)
     $defined_tuples[:t1][0].instance_of?(Artifact).should == true
@@ -96,7 +94,6 @@ describe 'tuple' do
   end
 
   it 'should associate defined policies with anonymous artifacts' do
-    pending 'anon support not implemented'
     policy :p1
     tuple :t1, (artifact :a1), :p1
     $defined_tuples[:t1][0].instance_of?(Artifact).should == true
@@ -104,10 +101,16 @@ describe 'tuple' do
   end
 
   it 'should handle non-trivial anonymous policies' do
+    
+    is_called_1 = false
+    is_called_2 = false
+    
     artifact :a1
     tuple :t1, :a1, (policy do
       activity :play do
-        constraint :c1
+        constraint :c1 do
+           is_called_1 = true
+        end
       end
       activity :record do
         constraint :c1
@@ -122,7 +125,9 @@ describe 'tuple' do
       activity :stop do
         constraint :c1
         constraint :c2
-        constraint :c3
+        constraint :c3 do
+          is_called_2 = true
+        end
         constraint :c4
       end
       activity :pause do
@@ -133,14 +138,106 @@ describe 'tuple' do
         constraint :c5
       end
     end)
+    
     $defined_tuples[:t1][0].instance_of?(Artifact).should == true
     $defined_tuples[:t1][1].instance_of?(Policy).should == true
+    
+    is_called_1.should == false
+    is_called_2.should == false
+    
     $defined_tuples[:t1][1].evaluate
+    
+    is_called_1.should == true
+    is_called_2.should == true
   end
 
-  it 'should handle non-trivial anonymous activities'
+  it 'should handle non-trivial anonymous activities' do
+    policy :p1
+    tuple :t1, (artifact do
+        define :a => '1'
+        define :b => '2'
+        define :c => '3'
+        define :d => '4'
+        define :e => '5'
+        define :f => '6'
+        define :g => '7'
+      end), :p1
+      $defined_tuples[:t1][0].instance_of?(Artifact).should == true
+      $defined_tuples[:t1][1].instance_of?(Policy).should == true
+      $defined_tuples[:t1][0].a.should == '1'
+      $defined_tuples[:t1][0].b.should == '2'
+      $defined_tuples[:t1][0].c.should == '3'
+      $defined_tuples[:t1][0].d.should == '4'
+      $defined_tuples[:t1][0].e.should == '5'
+      $defined_tuples[:t1][0].f.should == '6'
+      $defined_tuples[:t1][0].g.should == '7'
+  end
 
-  it 'should handle non-trivial anonymous policies and anonymous activities'
+  it 'should handle non-trivial anonymous policies and anonymous activities' do
+    
+    is_called_1 = false
+    is_called_2 = false
+    
+     tuple :t1, (artifact do
+          define :a => '1'
+          define :b => '2'
+          define :c => '3'
+          define :d => '4'
+          define :e => '5'
+          define :f => '6'
+          define :g => '7'
+        end), 
+        (policy do
+            activity :play do
+              constraint :c1 do
+                 is_called_1 = true
+              end
+            end
+            activity :record do
+              constraint :c1
+              constraint :c2
+            end
+            activity :rewind
+            activity :fast_forward do
+              constraint :c1
+              constraint :c2
+              constraint :c3
+            end
+            activity :stop do
+              constraint :c1
+              constraint :c2
+              constraint :c3 do
+                is_called_2 = true
+              end
+              constraint :c4
+            end
+            activity :pause do
+              constraint :c1
+              constraint :c2
+              constraint :c3
+              constraint :c4
+              constraint :c5
+            end
+        end)
+        
+        $defined_tuples[:t1][0].instance_of?(Artifact).should == true
+        $defined_tuples[:t1][1].instance_of?(Policy).should == true
+        $defined_tuples[:t1][0].a.should == '1'
+        $defined_tuples[:t1][0].b.should == '2'
+        $defined_tuples[:t1][0].c.should == '3'
+        $defined_tuples[:t1][0].d.should == '4'
+        $defined_tuples[:t1][0].e.should == '5'
+        $defined_tuples[:t1][0].f.should == '6'
+        $defined_tuples[:t1][0].g.should == '7'
+        
+        is_called_1.should == false
+        is_called_2.should == false
+
+        $defined_tuples[:t1][1].evaluate
+
+        is_called_1.should == true
+        is_called_2.should == true
+  end
 
 end
 
