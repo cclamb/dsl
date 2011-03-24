@@ -103,7 +103,40 @@ describe 'tuple' do
     $defined_tuples[:t1][1].instance_of?(Policy).should == true
   end
 
-  it 'should handle non-trivial anonymous policies'
+  it 'should handle non-trivial anonymous policies' do
+    artifact :a1
+    tuple :t1, :a1, (policy do
+      activity :play do
+        constraint :c1
+      end
+      activity :record do
+        constraint :c1
+        constraint :c2
+      end
+      activity :rewind
+      activity :fast_forward do
+        constraint :c1
+        constraint :c2
+        constraint :c3
+      end
+      activity :stop do
+        constraint :c1
+        constraint :c2
+        constraint :c3
+        constraint :c4
+      end
+      activity :pause do
+        constraint :c1
+        constraint :c2
+        constraint :c3
+        constraint :c4
+        constraint :c5
+      end
+    end)
+    $defined_tuples[:t1][0].instance_of?(Artifact).should == true
+    $defined_tuples[:t1][1].instance_of?(Policy).should == true
+    $defined_tuples[:t1][1].evaluate
+  end
 
   it 'should handle non-trivial anonymous activities'
 
