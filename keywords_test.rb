@@ -31,7 +31,7 @@ describe 'policy' do
 
   it 'should define policies with inline allocators' do
     is_c1_called = false
-    policy :p3, do
+    policy :p3 do
       evaluator :std_eval
       activity :play do
         constraint { is_c1_called = true }

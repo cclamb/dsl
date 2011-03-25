@@ -42,7 +42,7 @@ class Policy
   def evaluate
     @defined_activities.each do |k,v|
       v.each do |k,v|
-        case v.arity
+        case v.arity < 0 ? ~v.arity : v.arity
           when 0 ; instance_exec { v.call }
           when 1 ; instance_exec { v.call(artifact) }
           when 2 ; instance_exec { v.call(artifact, context) }
