@@ -1,3 +1,4 @@
+require './dsl_syntax_error'
 require './and_evaluator'
 require './or_evaluator'
 
@@ -15,10 +16,12 @@ class Policy
     @ctx = :loaded
     @artifact = nil
     @context = nil
+    @evaluator = create_evaluator(evaluator)
   end
 
   def evaluator(evaluator_type)
     @ctx = :evaluator
+    @evaluator = create_evaluator(evaluator_type)
     @ctx = :load
   end
   
@@ -39,15 +42,10 @@ class Policy
   end
 
   def evaluate
+    @evaluator.artifact = artifact
+    @evaluator.context = context
     @defined_activities.each do |k,v|
-      v.each do |k,v|
-        case v.arity < 0 ? ~v.arity : v.arity
-          when 0 ; instance_exec { v.call }
-          when 1 ; instance_exec { v.call(artifact) }
-          when 2 ; instance_exec { v.call(artifact, context) }
-          else ; raise DslSyntaxError.new('incorrect constraint arity')
-        end unless v == nil
-      end
+      @evaluator.call(v)
     end
   end
 
@@ -70,9 +68,12 @@ class Policy
     @defined_activities[@active_activity][tag] = block
   end
 
-  def select_stock_evaluator(symbol)
+  def create_evaluator(symbol = :std_eval)
+    symbol = symbol == nil ? :std_eval : symbol
     case symbol
-      when :std_eval; AndEvaluator.new
+      when :std_eval ; AndEvaluator.new(@artifact, @context)
+      when :or_eval  ; OrEvaluator.new(@artifact, @context)
+      else ; raise DslSyntaxError.new('custom evals currently unimplemented')
     end
   end
 

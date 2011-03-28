@@ -1,5 +1,7 @@
 class AndEvaluator
 
+  attr_accessor :artifact, :context
+
   def initialize(artifact = nil, context = nil)
     @artifact = artifact
     @context = context
@@ -23,8 +25,6 @@ class AndEvaluator
 
     return is_acceptable
 
-    #h.each_value { |v| return false if v.call == false }
-    #true
   end
 
 end

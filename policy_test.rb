@@ -313,6 +313,10 @@ describe 'constraint' do
   end
 end
 
+describe 'evaluate' do
+  it 'should handle activity info passed to evaluate'
+end
+
 describe 'pass/fail' do
   it 'should be able to process pass/fail from constraints' do
     policy = Policy.new do

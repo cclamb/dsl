@@ -1,5 +1,7 @@
 class OrEvaluator
 
+  attr_accessor :artifact, :context
+
   def initialize(artifact = nil, context = nil)
     @artifact = artifact
     @context = context
