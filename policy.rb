@@ -1,10 +1,7 @@
-require './error_handling'
 require './and_evaluator'
 require './or_evaluator'
 
 class Policy
-  
-  include ErrorHandling
 
   attr_accessor :artifact, :context
 
@@ -48,7 +45,7 @@ class Policy
           when 0 ; instance_exec { v.call }
           when 1 ; instance_exec { v.call(artifact) }
           when 2 ; instance_exec { v.call(artifact, context) }
-          else ; raise_syntax_error('incorrect constraint arity')
+          else ; raise DslSyntaxError.new('incorrect constraint arity')
         end unless v == nil
       end
     end
@@ -65,7 +62,7 @@ class Policy
   private
 
   def process_block(tag, &block)
-    raise_syntax_error('ctx is' + @ctx.to_s) if @ctx != :activity
+    raise DslSyntaxError.new('ctx is' + @ctx.to_s) if @ctx != :activity
     if tag == nil
       tag = @misc_key
       @misc_key = @misc_key + 1

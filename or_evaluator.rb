@@ -14,7 +14,7 @@ class OrEvaluator
           when 0 ; instance_exec { is_acceptable = v.call }
           when 1 ; instance_exec { is_acceptable = v.call(@artifact) }
           when 2 ; instance_exec { is_acceptable = v.call(@artifact, @context) }
-          else ; raise_syntax_error('incorrect constraint arity')
+          else ; raise DslSyntaxError.new('incorrect constraint arity')
         end unless v == nil
 
         return is_acceptable if is_acceptable == true
