@@ -1,4 +1,6 @@
 require './error_handling'
+require './and_evaluator'
+require './or_evaluator'
 
 class Policy
   
@@ -53,9 +55,11 @@ class Policy
   end
 
   def pass
+    true
   end
   
   def fail
+    false
   end
 
   private
@@ -67,6 +71,12 @@ class Policy
       @misc_key = @misc_key + 1
     end
     @defined_activities[@active_activity][tag] = block
+  end
+
+  def select_stock_evaluator(symbol)
+    case symbol
+      when :std_eval; AndEvaluator.new
+    end
   end
 
 end

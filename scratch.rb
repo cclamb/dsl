@@ -1,7 +1,7 @@
 
 $h={:c1=>lambda{true}, :c2=>lambda{false}}
 
-class Ander
+class AndEvaluator
   def call(h)
     f = false
     h.each_value do |v|
@@ -13,7 +13,7 @@ class Ander
   end
 end
 
-class Orer
+class OrEvaluator
   def call(h)
     f = false
     h.each_value do |v|
