@@ -145,7 +145,11 @@ describe 'tuple' do
     is_called_1.should == false
     is_called_2.should == false
     
-    $defined_tuples[:t1][1].evaluate
+    $defined_tuples[:t1][1].evaluate :pause
+    $defined_tuples[:t1][1].evaluate :stop
+    $defined_tuples[:t1][1].evaluate :rewind
+    $defined_tuples[:t1][1].evaluate :record
+    $defined_tuples[:t1][1].evaluate :play
     
     is_called_1.should == true
     is_called_2.should == true
@@ -233,7 +237,11 @@ describe 'tuple' do
         is_called_1.should == false
         is_called_2.should == false
 
-        $defined_tuples[:t1][1].evaluate
+        $defined_tuples[:t1][1].evaluate :pause
+        $defined_tuples[:t1][1].evaluate :stop
+        $defined_tuples[:t1][1].evaluate :rewind
+        $defined_tuples[:t1][1].evaluate :record
+        $defined_tuples[:t1][1].evaluate :play
 
         is_called_1.should == true
         is_called_2.should == true

@@ -41,12 +41,10 @@ class Policy
     process_block(tag, &block)
   end
 
-  def evaluate
+  def evaluate(activity)
     @evaluator.artifact = artifact
     @evaluator.context = context
-    @defined_activities.each do |k,v|
-      @evaluator.call(v)
-    end
+    @evaluator.call(@defined_activities[activity])
   end
 
   def pass

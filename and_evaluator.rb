@@ -21,7 +21,7 @@ class AndEvaluator
 
         return is_acceptable if is_acceptable == false
 
-    end
+    end unless h == nil
 
     return is_acceptable
 

@@ -11,6 +11,11 @@ describe 'call' do
     a = AndEvaluator.new
     a.call.should == true
   end
+  
+  it 'should handle nil argument as true' do
+    a = AndEvaluator.new
+    a.call(nil).should == true
+  end
 
   it 'should return the conjunction of predicates' do
     a = AndEvaluator.new

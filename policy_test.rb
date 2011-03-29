@@ -86,7 +86,11 @@ describe 'policy' do
     	activity :pause
     end
     
-    policy.evaluate
+    policy.evaluate :pause
+    policy.evaluate :stop
+    policy.evaluate :rewind
+    policy.evaluate :record
+    policy.evaluate :play
     
   end
 
@@ -120,7 +124,7 @@ describe 'constraint' do
         constraint :c1
       end
     end
-    policy.evaluate
+    policy.evaluate :a1
   end
 
   it 'should have a deferred call' do
@@ -146,7 +150,7 @@ describe 'constraint' do
     is_obligation_called.should == false
 
     is_called = false
-    policy.evaluate
+    policy.evaluate :a1
 
     is_called.should == false
     is_constraint_called.should == true
@@ -172,7 +176,7 @@ describe 'constraint' do
     is_obligation_called.should == false
 
     is_called = false
-    policy.evaluate
+    policy.evaluate :a1
 
     is_called.should == false
     is_constraint_called.should == true
@@ -202,7 +206,7 @@ describe 'constraint' do
     is_obligation_called.should == false
 
     is_called = false
-    policy.evaluate
+    policy.evaluate :a1
 
     is_called.should == false
     is_constraint_called.should == true
@@ -242,7 +246,7 @@ describe 'constraint' do
     o1_artifact.should == nil
 
     is_called = false
-    policy.evaluate
+    policy.evaluate :a1
 
     is_called.should == false
     is_constraint_called.should == true
@@ -260,7 +264,7 @@ describe 'constraint' do
     
     is_err = false
     begin
-      policy.evaluate
+      policy.evaluate :a1
     rescue
       is_err = true
     end
@@ -301,7 +305,7 @@ describe 'constraint' do
     
     policy.artifact = artifact
     policy.context = context
-    policy.evaluate
+    policy.evaluate :a1
     
     is_c0_called.should == true
     is_c1_called.should == true
@@ -314,7 +318,53 @@ describe 'constraint' do
 end
 
 describe 'evaluate' do
-  it 'should handle activity info passed to evaluate'
+  
+  before :each do
+    $thrown = false
+    $returned = false
+    $policy = Policy.new do
+      evaluator :std_eval
+      activity :throw do
+        constraint :must_have_ball do
+           $thrown = true
+         end
+        obligation :must_return_ball do
+          $returned = true
+        end
+      end
+    end
+  end
+  
+  it 'should handle activity info passed to evaluate' do
+    $thrown.should == false
+    $returned.should == false
+    $policy.evaluate :throw
+    $thrown.should == true
+    $returned.should == true
+  end
+  
+  it 'should handle incorrect tags' do
+    $thrown.should == false
+    $returned.should == false
+    $policy.evaluate :drop
+    $thrown.should == false
+    $returned.should == false
+  end
+  
+  it 'should handle nil tags' do
+    $policy.evaluate nil
+  end
+  
+  it 'should throw exception with no tags' do
+    failed = false
+    begin
+      $policy.evaluate
+    rescue
+      failed = true
+    end
+    failed.should == true
+  end
+  
 end
 
 describe 'pass/fail' do
@@ -326,7 +376,7 @@ describe 'pass/fail' do
       end
     end
     
-    policy.evaluate
+    policy.evaluate :a1
     
   end
 end
