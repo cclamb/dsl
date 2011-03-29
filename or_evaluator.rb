@@ -21,7 +21,7 @@ class OrEvaluator
 
         return is_acceptable if is_acceptable == true
 
-    end
+    end unless h == nil
 
     return is_acceptable
 
