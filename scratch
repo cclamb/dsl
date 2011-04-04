@@ -70,5 +70,65 @@ end
 ruby-1.9.2-p0 > eval(p)
  => #<Policy:0x9c2ecec @ctx=:loaded, @active_activity=nil, @misc_key=2, @defined_activities={:a1=>{0=>#<Proc:0x9c2ec24@(eval):3>, 1=>#<Proc:0x9c2ec10@(eval):6>}}, @artifact=nil, @context=nil> 
 
+
+
+New Language?
+
+create arbitrary items and then aggregate?
+
+# Define activity thingys
+a1 = activity do
+# ...
+end
+
+a1 = activity do
+# ...
+end
+
+a3 = activity do |a|
+# ...
+end
+
+# ...
+
+a10 = activity { |a,c| true unless a == nil && c == nill }
+
+# Build policy?
+
+p1 = policy do
+  constraint_evaluator :conjunctive_eval
+  activity_evaluator :disjunctive_eval
+  is_activity a3 constrain_by a1, a2
+  is_activity a10 constrain_by a1, a5 obligate_with a4, a6, a7
+  is_activity a9, :activity_evaluator => :conjunctive_eval constrain_by a1, a8, a3
+end
+
+# Build artifact?
+artif = artifact do
+  define :name => 'foo'
+  define :uri => Url.new('http://informatics.ece.unm.edu/thing/11')
+end
+
+# associate?
+bundle = associate artif, p1
+
+# emit different types of license info?
+puts bundle.xrml
+puts bundle.cc
+
+# emit to a file, something like
+file = # open file....
+bundle.xrml do |line|
+  file << line
+end
+
+bundle.cc do |line|
+  file << line
+end
+
+
+
+
+
 	
 
